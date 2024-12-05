@@ -1,1 +1,1 @@
-# WhyWeCare
+# WhyWeCare Community platform
