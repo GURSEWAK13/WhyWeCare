@@ -1,12 +1,12 @@
 import React from 'react';
-
+import Login from '../../assets/login.png'
 export default function SignInPage() {
   return (
     <div className="flex h-screen">
       <div className="w-1/2 bg-gray-100 hidden md:flex items-center justify-center">
-        <img src="/placeholder.svg" alt="Authentication" className="max-w-[80%]" />
+      <img src={Login} alt="Authentication" className="w-full h-full object-cover" />
       </div>
-      <div className="w-full md:w-1/2 flex justify-center items-center">
+      <div className="bg-gray-900 w-full md:w-1/2 flex justify-center items-center">
         <div className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 w-full max-w-md">
           <div className="flex flex-col items-center space-y-2 mb-4">
             <h1 className="text-2xl font-semibold tracking-tight">Sign in to your account</h1>
@@ -35,7 +35,7 @@ export default function SignInPage() {
                 placeholder="Password"
               />
             </div>
-            <div>
+            <div className="w-100 flex justify-center items-center">
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 type="button"
@@ -43,7 +43,12 @@ export default function SignInPage() {
                 Sign In
               </button>
             </div>
-            <div>
+            <div className="flex justify-center items-center">
+            <div className="border-t border-gray-400 flex-grow mr-4"></div>
+            <span className="font-bold">OR</span>
+            <div className="border-t border-gray-400 flex-grow ml-4"></div>
+            </div>
+            <div className="w-100 flex justify-center items-center">
               <button
                 className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 type="button"
