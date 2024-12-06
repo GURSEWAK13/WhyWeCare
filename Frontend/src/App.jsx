@@ -1,10 +1,14 @@
 import Header from "./Components/Header";
-import SignInPage from "./Components/signin/signin";
+import Hero from "./Components/Hero";
+
 export default function App() {
   return (
-    <>
-    {/* <Header/> */}
-    <SignInPage/>
-    </>
+    <div className="flex min-h-screen flex-col">
+    <Header />
+    <main className="flex-1">
+      <Hero/>
+    </main>
+    {/* <Footer /> */}
+  </div>
   )
 }
