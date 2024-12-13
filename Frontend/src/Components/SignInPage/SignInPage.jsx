@@ -4,7 +4,8 @@ export default function SignInPage() {
   return (
     <div className="flex h-screen">
       <div className="w-1/2 bg-gray-100 hidden md:flex items-center justify-center">
-      <img src={Login} alt="Authentication" className="w-full h-full object-cover" />
+
+      <img src={Login} alt="Authentication" className="w-full h-full object-cover " />
       </div>
       <div className="bg-gray-900 w-full md:w-1/2 flex justify-center items-center">
         <div className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 w-full max-w-md">
