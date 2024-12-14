@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -15,9 +14,9 @@ const Header = () => {
           md:block
         `}
       >
-        <a href="#" className="hover:text-gray-400">WeCare</a>
+        <a href="/" className="hover:text-gray-400">WeCare</a>
         <a href="#" className="hover:text-gray-400">Services</a>
-        <a href="#" className="hover:text-gray-400">Events</a>
+        <a href="/events" className="hover:text-gray-400">Events</a>
         <a href="#" className="hover:text-gray-400">Volunteer</a>
         <a href="#" className="hover:text-gray-400">Contact</a>
       </nav>
@@ -25,10 +24,10 @@ const Header = () => {
         <a href="#" className="bg-white text-gray-900 px-4 py-2 rounded-md hover:bg-gray-200">
           Donate Now
         </a>
-        <a href="#" className="bg-white text-gray-900 px-4 py-2 rounded-md hover:bg-gray-200">
+        <a href="/signin" className="bg-white text-gray-900 px-4 py-2 rounded-md hover:bg-gray-200">
           Sign In
         </a>
-        <a href="#" className="bg-white text-gray-900 px-4 py-2 rounded-md hover:bg-gray-200">
+        <a href="/register" className="bg-white text-gray-900 px-4 py-2 rounded-md hover:bg-gray-200">
           Register
         </a>
         <button

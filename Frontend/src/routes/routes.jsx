@@ -14,7 +14,7 @@ export const routes = [
         element: <Home/>,
       },
       {
-        path: "/signup",
+        path: "/signin",
         element: <SignInPage/>,
       },
       {
