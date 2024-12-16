@@ -1,10 +1,10 @@
 import React from 'react';
-import banner from '../../assets/signInBanner.png'
+import banner from '../../assets/signInBanner.svg'
 export default function SignInPage() {
   return (
     <div className="flex h-screen">
-      <div className="w-3/5 bg-gradient-to-br from-blue-500 to-purple-600 hidden md:flex items-center justify-center relative overflow-hidden">
-        <img src={banner} alt="Welcome" className="w-full h-full object-fill"/>
+      <div className="w-3/5 hidden md:flex items-center justify-center relative overflow-hidden">
+        <img src={banner} alt="Welcome" className="w-full h-full object-cover"/>
       </div>
       <div className="bg-white w-full md:w-2/5 flex justify-center items-center px-4 py-8">
         <div className="w-full max-w-md space-y-6">

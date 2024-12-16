@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import banner from '../../assets/signInBanner.png'
+import banner from '../../assets/signInBanner.svg'
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -32,8 +32,8 @@ export default function RegisterPage() {
   return (
     <div className="flex h-screen flex-wrap">
       {/* Left Section */}
-      <div className="hidden md:flex w-full md:w-3/5 bg-gradient-to-br from-blue-500 to-purple-600 items-center justify-center relative overflow-hidden">
-        <img src={banner} alt="Welcome" className="w-full h-full object-fit"/>
+      <div className="hidden md:flex w-full md:w-3/5 items-center justify-center relative overflow-hidden">
+        <img src={banner} alt="Welcome" className="w-full h-full object-cover"/>
       </div>
       {/* Right Section */}
       <div className="bg-white w-full md:w-2/5 flex justify-center items-center px-4 py-8">
