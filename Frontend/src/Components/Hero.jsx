@@ -17,28 +17,41 @@ const Hero = () => {
 
   const sliderImages = [
     {
-      url: banner,
-      alt: "Volunteering 1",
+      url: banner, // Your imported banner
+      alt: "Main Banner",
       showText: false,
       overlay: false,
-      isBanner: true  // Add this flag to identify the banner image
+      isBanner: true
     },
     {
-      url: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3",
-      alt: "Volunteering 2",
+      url: "https://images.unsplash.com/photo-1593113598332-cd288d649433?ixlib=rb-4.0.3",
+      alt: "Community Volunteering",
       showText: true,
       overlay: true,
       isBanner: false
     },
     {
       url: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3",
-      alt: "Volunteering 3",
+      alt: "Food Donation",
+      showText: true,
+      overlay: true,
+      isBanner: false
+    },
+    {
+      url: "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?ixlib=rb-4.0.3",
+      alt: "Medical Care",
+      showText: true,
+      overlay: true,
+      isBanner: false
+    },
+    {
+      url: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3",
+      alt: "Environmental Care",
       showText: true,
       overlay: true,
       isBanner: false
     }
-  ];
-
+];
   const [currentSlide, setCurrentSlide] = React.useState(0);
 
   const updatedSettings = {
