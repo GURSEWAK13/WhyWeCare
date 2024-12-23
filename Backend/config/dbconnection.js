@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 try {
   await mongoose.connect(
-    process.env.DB_CONNECTION
+    "mongodb://localhost:27017/"
   );
   console.log("Db Connection success");
 } catch (error) {

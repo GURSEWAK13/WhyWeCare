@@ -2,6 +2,7 @@
 import express from "express";
 import productsRoute from "./routes/products.js";
 import userRoute from "./routes/user.js";
+import userEvent from "./routes/events.js"
 import "./config/dbconnection.js";
 
 const app = express();
@@ -24,6 +25,7 @@ app.use("/", express.static("./../frontend/dist"))
 // Routing middleware
 app.use("/products", productsRoute);
 app.use("/user", userRoute);
+app.use("/events", userEvent);
 
 app.get("/", (req, res) => {
   // Do some logic here

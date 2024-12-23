@@ -18,28 +18,52 @@ export default function RegisterPage() {
     "West Bengal": ["Kolkata", "Darjeeling", "Siliguri", "Howrah"],
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({
-      name,
-      email,
-      password,
-      state,
-      city,
-    });
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const user = {
+    name,
+    email,
+    password,
+    state,
+    city,
   };
+
+  try {
+    const response = await fetch('http://localhost:8081/user/signin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(user),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to sign in');
+    }
+
+    const data = await response.json();
+    console.log('API response:', data);
+
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('name', data.user.name);
+    localStorage.setItem('state', data.user.state);
+
+  } catch (error) {
+    console.error('Error:', error);
+    // Handle errors appropriately, e.g., display an error message to the user
+  }
+};
 
   return (
     <div className="flex h-screen flex-wrap">
       {/* Left Section */}
       <div className="hidden md:flex w-full md:w-3/5 items-center justify-center relative overflow-hidden">
-        <img src={banner} alt="Welcome" className="w-full h-full object-cover"/>
+        <img src={banner} alt="Welcome" className="w-full h-full object-cover rounded-3xl p-2"/>
       </div>
       {/* Right Section */}
       <div className="bg-white w-full md:w-2/5 flex justify-center items-center px-4 py-8">
         <div className="w-full max-w-md space-y-6">
           <div className="text-center">
-            <h1 className="text-3xl font-extrabold text-gray-900">Register</h1>
+            <h1 className="text-3xl font-extrabold text-gray-900">Welcome</h1>
             <p className="mt-2 text-sm text-gray-600">
               Create your account to get started
             </p>
@@ -158,7 +182,7 @@ export default function RegisterPage() {
           <p className="text-center text-sm text-gray-500 mt-4">
             Already have an account?
             <a href="/signin" className="ml-1 text-blue-600 hover:text-blue-500">
-              Sign in
+              Welcome Back
             </a>
           </p>
         </div>

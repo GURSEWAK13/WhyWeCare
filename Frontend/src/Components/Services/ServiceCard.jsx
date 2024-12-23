@@ -13,7 +13,7 @@ const ServiceCard = ({ title, description, icon, serviceId }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 h-full flex flex-col">
+    <div className="bg-purple-100 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 h-full flex flex-col p-2">
       {/* Header with Icon and Title */}
       <div>
         <div className="flex items-center gap-2">
@@ -30,20 +30,19 @@ const ServiceCard = ({ title, description, icon, serviceId }) => {
       </div>
 
       {/* Buttons */}
-      <div className="p-4 border-t bg-gray-50 rounded-b-lg">
+      <div className="p-4 border-t bg-green-100 rounded-b-lg">
         <div className="flex flex-col sm:flex-row gap-3">
           <button 
             onClick={handleCreatePost}
-            className="flex-1 bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 transition duration-300 flex items-center justify-center"
+            className="flex-1 bg-indigo-400 text-white px-4 py-2 rounded-md hover:bg-indigo-600 transition duration-300 flex items-center justify-center"
           >
-            <span className="mr-2">📝</span>
             Create Post
           </button>
           <button 
             onClick={handleViewPosts}
             className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition duration-300 flex items-center justify-center"
           >
-            <span className="mr-2">👥</span>
+            {/* <span className="mr-2">👥</span> */}
             View Posts
           </button>
         </div>

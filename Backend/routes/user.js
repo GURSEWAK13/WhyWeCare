@@ -23,11 +23,9 @@ router.get("/:email", verifyToken, (req, res) => {
     }
   );
 });
-
+// For Sign in--------------------------
 router.post("/signin", (req, res) => {
   const userCreds = req.body;
-  console.log("The userCreds are: ", userCreds);
-
   UserModel.signIn(
     userCreds,
     (dbRes) => {
@@ -49,11 +47,11 @@ router.post("/signin", (req, res) => {
     }
   );
 });
-
+// For Register-------------------------
 router.post("/", (req, res) => {
   const user = req.body;
 
-  UserModel.addUser(
+  UserModel.register(
     user,
     (dbRes) => {
       if (dbRes) {
