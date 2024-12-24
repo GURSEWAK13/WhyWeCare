@@ -3,7 +3,7 @@
 <div style="text-align: center;">
 
 
-![ExpoWeehslLogo](./assets/Satan.jpg)
+![ExpoWeehslLogo](./assets/Satan.png)
 
 ***To create a unified platform where communities can discover, share, and participate in local social events and initiatives, making it easier for people to contribute to meaningful causes and stay connected with their neighborhood's social activities***
 
