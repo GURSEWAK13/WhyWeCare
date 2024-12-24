@@ -3,7 +3,7 @@
 <div style="text-align: center;">
 
 
-![ExpoWeehslLogo](./client/public/ExpoWheels.jpg)
+![ExpoWeehslLogo](./assets/Satan.jpg)
 
 ***To create a unified platform where communities can discover, share, and participate in local social events and initiatives, making it easier for people to contribute to meaningful causes and stay connected with their neighborhood's social activities***
 
@@ -37,8 +37,57 @@
 
 ---
 
-## Features
+## Key Features
 
+- **🤝 Seamless Collaboration**
+
+    Effortless event listing and management
+    Real-time updates for all stakeholders
+    Integrated communication tools
+    Multi-user collaboration workspace
+
+- **🎯 Role-Based Access**
+    *Local Users*
+
+    Browse and filter events
+    Personalized event recommendations
+    Save favorites and set reminders
+    Mobile-friendly booking process
+
+    *Event Managers*
+
+    Comprehensive event management dashboard
+    Real-time analytics and reporting
+    Automated scheduling tools
+    Marketing and promotion features
+
+    *Government Admins*
+
+    Centralized control panel
+    Full CRUD operations
+    User management system
+    Compliance monitoring tools
+
+- **🔍 Smart Search & Discovery**
+
+    Advanced filtering by state and city
+    Interactive map integration
+    Smart event recommendations
+    Real-time availability updates
+
+- **📱 Cross-Platform Excellence**
+
+    Responsive design for all devices
+    Native-like mobile experience
+    Offline capabilities
+    Cross-device synchronization
+
+- **⚡ Performance & Security**
+
+    Lightning-fast load times
+    Enterprise-grade security
+    Regular backups
+    99.9% uptime guarantee
 
 ---
 
@@ -217,4 +266,3 @@ I'm always excited to connect with others who share similar interests. If you ha
 Your support and engagement drive continuous improvement and innovation. I look forward to the possibility of working together and learning from your perspective!
 
 ---
-
