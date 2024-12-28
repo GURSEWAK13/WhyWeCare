@@ -4,10 +4,6 @@ import { useNavigate } from 'react-router-dom';
 const ServiceCard = ({ title, description, icon, serviceId }) => {
   const navigate = useNavigate();
 
-  const handleCreatePost = () => {
-    navigate(`/services/${serviceId}/create`);
-  };
-
   const handleViewPosts = () => {
     navigate(`/services/${serviceId}/posts`);
   };
@@ -33,13 +29,13 @@ const ServiceCard = ({ title, description, icon, serviceId }) => {
       <div className="p-4 border-t bg-green-100 rounded-b-lg">
         <div className="flex flex-col sm:flex-row gap-3">
           <button 
-            onClick={handleCreatePost}
+            onClick = {() => navigate(`/add-event`)}
             className="flex-1 bg-indigo-400 text-white px-4 py-2 rounded-md hover:bg-indigo-600 transition duration-300 flex items-center justify-center"
           >
             Create Post
           </button>
           <button 
-            onClick={handleViewPosts}
+            onClick = {() => navigate(`/events`)}
             className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition duration-300 flex items-center justify-center"
           >
             {/* <span className="mr-2">👥</span> */}

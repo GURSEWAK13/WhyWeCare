@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import banner from '../../assets/signInBanner.svg'
+import { useNavigate } from 'react-router-dom';
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -7,6 +8,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
+  const navigate = useNavigate();
 
   const statesAndCities = {
     "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore"],
@@ -19,39 +21,36 @@ export default function RegisterPage() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const user = {
-    name,
-    email,
-    password,
-    state,
-    city,
-  };
+    const user = {
+      name,
+      email,
+      password,
+      state,
+      city,
+    };
 
-  try {
-    const response = await fetch('http://localhost:8081/user/signin', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(user),
-    });
+    try {
+      const response = await fetch('http://localhost:8081/user/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(user),
+      });
 
-    if (!response.ok) {
-      throw new Error('Failed to sign in');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Registration failed');
+      }
+
+      const data = await response.json();
+      navigate('/verify-otp', { state: { email: user.email } });
+
+    } catch (error) {
+      console.error('Error:', error);
+      alert(error.message);
     }
-
-    const data = await response.json();
-    console.log('API response:', data);
-
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('name', data.user.name);
-    localStorage.setItem('state', data.user.state);
-
-  } catch (error) {
-    console.error('Error:', error);
-    // Handle errors appropriately, e.g., display an error message to the user
-  }
-};
+  };
 
   return (
     <div className="flex h-screen flex-wrap">

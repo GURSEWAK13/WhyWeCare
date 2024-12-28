@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const EventsPage = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [showAddEventForm, setShowAddEventForm] = useState(false);
-  const [newEvent, setNewEvent] = useState({
-    title: '',
-    date: '',
-    type: '',
-    imageUrl: '',
-    description: ''
-  });
 
   const events = [
     {
@@ -60,139 +54,42 @@ const EventsPage = () => {
     event.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleAddEvent = () => {
-    setShowAddEventForm(true);
-  };
-
-  const handleSaveEvent = () => {
-    events.push(newEvent);
-    setShowAddEventForm(false);
-    setNewEvent({ title: '', date: '', type: '', imageUrl: '', description: '' });
-  };
-
-  const handleInputChange = (e) => {
-    setNewEvent({ ...newEvent, [e.target.name]: e.target.value });
-  };
-
-  const handleImageUpload = (e) => {
-    setNewEvent({ ...newEvent, imageUrl: e.target.value });
-  };
-
   return (
     <div className="bg-gray-900 text-white min-h-screen">
       <header className="bg-gray-800 py-4 px-6 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Events</h1>
-        <div className="flex items-center">
+        <div className="flex items-center space-x-4">
           <input
             type="text"
             placeholder="Search events..."
-            className="bg-gray-700 text-white px-4 py-2 rounded-md mr-4"
+            className="bg-gray-700 text-white px-4 py-2 rounded-md"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md" onClick={handleAddEvent}>
+          <button 
+            onClick={() => navigate('/add-event')}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
+          >
             Add Event
           </button>
         </div>
       </header>
 
-      {showAddEventForm && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center z-50">
-          <div className="bg-white text-gray-900 p-6 rounded-md shadow-md w-full max-w-md">
-            <h2 className="text-2xl font-bold mb-4">Add New Event</h2>
-            <div className="mb-4">
-              <label htmlFor="title" className="block font-medium mb-2">
-                Title:
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={newEvent.title}
-                onChange={handleInputChange}
-                className="bg-gray-200 px-4 py-2 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="date" className="block font-medium mb-2">
-                Date:
-              </label>
-              <input
-                type="text"
-                id="date"
-                name="date"
-                value={newEvent.date}
-                onChange={handleInputChange}
-                className="bg-gray-200 px-4 py-2 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="type" className="block font-medium mb-2">
-                Type:
-              </label>
-              <input
-                type="text"
-                id="type"
-                name="type"
-                value={newEvent.type}
-                onChange={handleInputChange}
-                className="bg-gray-200 px-4 py-2 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="imageUrl" className="block font-medium mb-2">
-                Image URL:
-              </label>
-              <input
-                type="text"
-                id="imageUrl"
-                name="imageUrl"
-                value={newEvent.imageUrl}
-                onChange={handleImageUpload}
-                className="bg-gray-200 px-4 py-2 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="description" className="block font-medium mb-2">
-                Description:
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                value={newEvent.description}
-                onChange={handleInputChange}
-                className="bg-gray-200 px-4 py-2 rounded-md w-full h-20"
-              ></textarea>
-            </div>
-            <div className="flex justify-end">
-              <button
-                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md mr-2"
-                onClick={handleSaveEvent}
-              >
-                Save
-              </button>
-              <button
-                className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md"
-                onClick={() => setShowAddEventForm(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <main className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredEvents.map((event, index) => (
-          <div key={index} className="bg-gray-800 rounded-md shadow-md overflow-hidden flex flex-col items-center justify-center">
-            <img src={event.imageUrl} alt={event.title} className="mb-4 rounded-md w-full h-48 object-cover" />
-            <div className="p-4 text-center">
-              <h2 className="text-lg font-bold">{event.title}</h2>
-              <p className="text-gray-400 mt-2">{event.date}</p>
-              <p className="text-gray-300 mt-2">{event.description}</p>
-              <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md mt-4">
+          <div key={index} className="bg-gray-800 rounded-lg shadow-xl overflow-hidden transform transition duration-300 hover:scale-105">
+            <img 
+              src={event.imageUrl} 
+              alt={event.title} 
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-6">
+              <h2 className="text-xl font-bold mb-2">{event.title}</h2>
+              <p className="text-gray-400 text-sm mb-2">{event.date}</p>
+              <p className="text-gray-300 mb-4">{event.description}</p>
+              <span className="inline-block bg-blue-500 text-white text-sm px-3 py-1 rounded-full">
                 {event.type}
-              </button>
+              </span>
             </div>
           </div>
         ))}

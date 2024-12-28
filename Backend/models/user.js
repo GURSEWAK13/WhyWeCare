@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import brcypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET_KEY } from "../config/constant.js";
+import crypto from "crypto";
+import { sendVerificationEmail, sendLoginNotification, generateOTP } from "../utils/emailService.js";
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -25,7 +27,15 @@ const userSchema = new mongoose.Schema({
   city: {
     type: String,
     required: true,
-  }
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  verificationToken: String,
+  verificationTokenExpires: Date,
+  otp: String,
+  otpExpires: Date
 });
 
 const UserModel = mongoose.model("user", userSchema);
@@ -58,29 +68,40 @@ UserModel.signIn = async (user, successCallback, errorCallback) => {
       return;
     }
 
-    console.log("SignIn | dbRes is: ", dbRes);
-    const isPasswordMatch = brcypt.compareSync(user.password, dbRes.password);
+    if (!dbRes.isVerified) {
+      errorCallback({ status: 403, message: "Please verify your email first" });
+      return;
+    }
+
+    const isPasswordMatch = await brcypt.compare(user.password, dbRes.password);
     
     if (isPasswordMatch) {
-      // create a token for the user
       const authToken = jwt.sign({ email: dbRes.email }, JWT_SECRET_KEY, {
         expiresIn: "1h",
       });
-      
-      // Remove password from response
-      const userResponse = {
-        name: dbRes.name,
-        email: dbRes.email,
-        state: dbRes.state,
-        city: dbRes.city
+
+      // Send login notification
+      const deviceInfo = {
+        device: user.deviceInfo?.device || 'Unknown',
+        browser: user.deviceInfo?.browser || 'Unknown',
+        location: user.deviceInfo?.location || 'Unknown'
       };
       
-      successCallback({ token: authToken, user: userResponse });
+      await sendLoginNotification(dbRes.email, new Date().toISOString(), deviceInfo);
+      
+      successCallback({
+        token: authToken,
+        user: {
+          name: dbRes.name,
+          email: dbRes.email,
+          state: dbRes.state,
+          city: dbRes.city
+        }
+      });
     } else {
       errorCallback({ status: 401, message: "Invalid email or password" });
     }
-  } catch (dbErr) {
-    console.error("SignIn | dbErr is: ", dbErr);
+  } catch (error) {
     errorCallback({ status: 500, message: "Internal server error" });
   }
 };
@@ -92,45 +113,92 @@ UserModel.register = async (user, successCallback, errorCallback) => {
     return;
   }
 
-  let encryptedPassword = "";
   try {
-    // Check if user already exists
-    const existingUser = await UserModel.findOne({ email: user.email });
-    if (existingUser) {
-      errorCallback({ status: 409, message: "Email already registered" });
-      return;
-    }
+    const otp = generateOTP();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-    // Encrypt password
-    encryptedPassword = brcypt.hashSync(user.password, 10);
-    
-    // Create new user
     const newUser = await UserModel.create({
       name: user.name,
       email: user.email,
-      password: encryptedPassword,
+      password: brcypt.hashSync(user.password, 10),
       state: user.state,
-      city: user.city
+      city: user.city,
+      otp,
+      otpExpires
     });
 
-    // Generate token
-    const authToken = jwt.sign({ email: newUser.email }, JWT_SECRET_KEY, {
+    const emailSent = await sendVerificationEmail(user.email, otp);
+    if (!emailSent) {
+      await UserModel.deleteOne({ _id: newUser._id });
+      errorCallback({ status: 500, message: "Error sending verification email" });
+      return;
+    }
+
+    successCallback({
+      email: newUser.email,
+      message: "Please check your email for OTP verification"
+    });
+  } catch (error) {
+    errorCallback({ status: 500, message: "Error registering user" });
+  }
+};
+
+UserModel.verifyEmail = async (token, successCallback, errorCallback) => {
+  try {
+    const user = await UserModel.findOne({
+      verificationToken: token,
+      verificationTokenExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      errorCallback({ status: 400, message: "Invalid or expired verification token" });
+      return;
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpires = undefined;
+    await user.save();
+
+    successCallback({ message: "Email verified successfully" });
+  } catch (error) {
+    errorCallback({ status: 500, message: "Error verifying email" });
+  }
+};
+
+UserModel.verifyOTP = async (email, otp, successCallback, errorCallback) => {
+  try {
+    const user = await UserModel.findOne({
+      email,
+      otp,
+      otpExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      errorCallback({ status: 400, message: "Invalid or expired OTP" });
+      return;
+    }
+
+    user.isVerified = true;
+    user.otp = undefined;
+    user.otpExpires = undefined;
+    await user.save();
+
+    const authToken = jwt.sign({ email: user.email }, JWT_SECRET_KEY, {
       expiresIn: "1h",
     });
 
-    // Remove password from response
-    const userResponse = {
-      name: newUser.name,
-      email: newUser.email,
-      state: newUser.state,
-      city: newUser.city
-    };
-
-    console.log("Register | New user created: ", userResponse);
-    successCallback({ token: authToken, user: userResponse });
-  } catch (dbErr) {
-    console.error("Register | dbErr is: ", dbErr);
-    errorCallback({ status: 500, message: "Internal server error" });
+    successCallback({
+      token: authToken,
+      user: {
+        name: user.name,
+        email: user.email,
+        state: user.state,
+        city: user.city
+      }
+    });
+  } catch (error) {
+    errorCallback({ status: 500, message: "Error verifying OTP" });
   }
 };
 

@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
-
+import dotenv from 'dotenv';
+dotenv.config();
+const dbConnection = process.env.DB_CONNECTION;
 try {
   await mongoose.connect(
-    "mongodb://localhost:27017/"
+    dbConnection
   );
   console.log("Db Connection success");
 } catch (error) {

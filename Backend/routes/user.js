@@ -6,20 +6,27 @@ import { verifyToken } from "../utils/helpers.js";
 const router = express.Router();
 
 router.get("/:email", verifyToken, (req, res) => {
+  const email = req.params.email;
+  
+  if (!email) {
+    return res.status(400).send({ error: "Email parameter is required" });
+  }
+
   UserModel.getUser(
-    req,
+    email,  // Pass only the email instead of entire request object
     (dbRes) => {
       if (dbRes) {
         res.send(dbRes);
       } else {
-        res.status(204);
-        res.send(dbRes);
+        res.status(404).send({ message: "User not found" }); // Changed from 204 to 404 for better semantics
       }
     },
     (dbErr) => {
-      console.log(dbErr.name);
-      res.status(dbErr.status || 500);
-      res.send({ error: dbErr.message });
+      console.log(`Error getting user: ${dbErr.name}`);
+      const statusCode = dbErr.status || 500;
+      res.status(statusCode).send({ 
+        error: dbErr.message || "Internal server error"
+      });
     }
   );
 });
@@ -69,6 +76,67 @@ router.post("/", (req, res) => {
         res.status(500);
       }
       res.send({ error: dbErr.message });
+    }
+  );
+});
+
+router.post('/register', (req, res) => {
+  const user = req.body;
+  
+  UserModel.register(
+    user,
+    (success) => {
+      res.status(201).json(success);
+    },
+    (error) => {
+      res.status(error.status || 500).json({ message: error.message });
+    }
+  );
+});
+
+router.post('/signin', (req, res) => {
+  const user = req.body;
+  
+  UserModel.signIn(
+    user,
+    (success) => {
+      res.status(200).json(success);
+    },
+    (error) => {
+      res.status(error.status || 500).json({ message: error.message });
+    }
+  );
+});
+
+router.get('/verify-email/:token', (req, res) => {
+  const { token } = req.params;
+  
+  UserModel.verifyEmail(
+    token,
+    (success) => {
+      res.status(200).json(success);
+    },
+    (error) => {
+      res.status(error.status || 500).json({ message: error.message });
+    }
+  );
+});
+
+router.post('/verify-otp', (req, res) => {
+  const { email, otp } = req.body;
+  
+  if (!email || !otp) {
+    return res.status(400).json({ message: "Email and OTP are required" });
+  }
+
+  UserModel.verifyOTP(
+    email,
+    otp,
+    (success) => {
+      res.status(200).json(success);
+    },
+    (error) => {
+      res.status(error.status || 500).json({ message: error.message });
     }
   );
 });

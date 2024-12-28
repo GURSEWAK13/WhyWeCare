@@ -8,18 +8,30 @@ const eventSchema = new mongoose.Schema({
     required: true,
   },
   date: {
-    type: String,
+    type: Date,
     required: true,
   },
   type: {
     type: String,
     required: true,
+    enum: [
+      'BLOOD DONATION',
+      'CHARITY',
+      'PROTEST',
+      'VOLUNTEER',
+      'ADOPTION',
+      'OTHER'
+    ]
   },
   imageUrl: {
     type: String,
     required: true,
   },
   description: {
+    type: String,
+    required: true,
+  },
+  address: {
     type: String,
     required: true,
   },
