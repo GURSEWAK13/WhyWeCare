@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import brcypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET_KEY } from "../config/constant.js";
-import crypto from "crypto";
+// import crypto from "crypto";
 import { sendVerificationEmail, sendLoginNotification, generateOTP } from "../utils/emailService.js";
 
 const userSchema = new mongoose.Schema({
@@ -234,5 +234,24 @@ UserModel.verifyOTP = async (email, otp, successCallback, errorCallback) => {
     errorCallback({ status: 500, message: "Error verifying OTP" });
   }
 };
+UserModel.allUser = async (req, successCallback, errorCallback) => {
 
+  try {
+    // Find all users in the database
+    const dbRes = await UserModel.find({});
+    console.log("Verified request");
+    
+    // Filter out sensitive information before sending response
+    const sanitizedUsers = dbRes.map(user => ({
+      email: user.email,
+      name: user.name,
+      // Add other non-sensitive fields you want to include
+    }));
+    
+    successCallback(sanitizedUsers);
+  } catch (dbErr) {
+    console.error("GET ALL | dbErr is: ", dbErr.Error);
+    errorCallback(dbErr);
+  }
+};
 export default UserModel;

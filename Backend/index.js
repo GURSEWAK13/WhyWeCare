@@ -1,26 +1,35 @@
 import express from "express";
-import productsRoute from "./routes/products.js";
 import userRoute from "./routes/user.js";
 import userEvent from "./routes/events.js"
+import adminAuth from "./routes/auth.js"
+import Donation from "./routes/donation.js";
+import userEvent_state from "./routes/events_state.js"
 import "./config/dbconnection.js";
-import cors from 'cors';
 import { config } from './config/config.js';
 
 const app = express();
 
 // Generic Middlewares
 app.use(express.json());
-app.use(cors({
-  origin: config.frontendUrl,
-  credentials: true
-}));
+app.use("*", (req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, PUT, POST, DELETE, OPTIONS"
+  );
+  next();
+});
 
-app.use("/", express.static("./../frontend/dist"))
+// app.use("/", express.static("./../frontend/dist"))
 
 // Routing middleware
-app.use("/products", productsRoute);
+// app.use("/products", productsRoute);
 app.use("/user", userRoute);
 app.use("/events", userEvent);
+app.use("/auth", adminAuth);
+app.use("/donation", Donation);
+app.use("/events_state", userEvent_state);
 
 app.get("/", (req, res) => {
   res.send("hello world again");

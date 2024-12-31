@@ -6,12 +6,15 @@ const verifyToken = (req, res, next) => {
   let decodedAuthToken;
   try {
     decodedAuthToken = jwt.verify(authToken, JWT_SECRET_KEY);
-    req.emailFromAuthToken = decodedAuthToken.email;
+    if(req.get("emailFromAuthToken") != decodedAuthToken.email){
+
+      throw new Error('Email in request does not match email from token')
+    }
     next();
   } catch (error) {
-    res.status(401).send({ message: "Invalid credentials" });
+    res.status(401).send({ message: error.message });
   }
-  console.log("The decodedAuthToken is: ", decodedAuthToken);
+  console.log("The decodedAuthToken email is: ", decodedAuthToken.email);
 };
 
 export { verifyToken };

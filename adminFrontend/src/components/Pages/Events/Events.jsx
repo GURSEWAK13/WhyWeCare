@@ -26,7 +26,7 @@ export default function EventsPage() {
   const handleSubmit = async (state, e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${import.meta.env.VITE_NODEJS_BACKEND}/events/${state}`, {
+      const response = await fetch(`${import.meta.env.VITE_NODEJS_BACKEND}/events_state/${state}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...formData, state })
@@ -49,7 +49,7 @@ export default function EventsPage() {
   };
   const deleteEvent = async (state, eventId) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_NODEJS_BACKEND}/events/${state}/${eventId}`, {
+      const response = await fetch(`${import.meta.env.VITE_NODEJS_BACKEND}/events_state/${state}/${eventId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -72,7 +72,7 @@ export default function EventsPage() {
     setLoading(prev => ({ ...prev, [state]: true }));
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_NODEJS_BACKEND}/events/${state}`, {
+      const response = await fetch(`${import.meta.env.VITE_NODEJS_BACKEND}/events_state/${state}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });

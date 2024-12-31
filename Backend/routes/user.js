@@ -5,26 +5,19 @@ import { verifyToken } from "../utils/helpers.js";
 
 const router = express.Router();
 
-router.get("/:email", verifyToken, (req, res) => {
-  const email = req.params.email;
-  
-  if (!email) {
-    return res.status(400).send({ error: "Email parameter is required" });
-  }
-
-  UserModel.getUser(
-    email,  // Pass only the email instead of entire request object
+router.get("/all",verifyToken, (req, res) => {
+  UserModel.allUser(
+    req,
     (dbRes) => {
-      if (dbRes) {
-        res.send(dbRes);
+      if (dbRes && dbRes.length > 0) {
+        res.status(200).json(dbRes);
       } else {
-        res.status(404).send({ message: "User not found" }); // Changed from 204 to 404 for better semantics
+        res.status(204).json([]);
       }
     },
     (dbErr) => {
-      console.log(`Error getting user: ${dbErr.name}`);
-      const statusCode = dbErr.status || 500;
-      res.status(statusCode).send({ 
+      console.error("Error fetching all users:", dbErr);
+      res.status(dbErr.status || 500).json({
         error: dbErr.message || "Internal server error"
       });
     }
