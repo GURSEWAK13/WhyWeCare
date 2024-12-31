@@ -86,15 +86,12 @@ router.post('/register', (req, res) => {
     (success) => {
       res.status(201).json({
         token: success.token,
-        user: {
-          name: success.user.name,
-          email: success.user.email,
-          state: success.user.state,
-          city: success.user.city
-        }
+        user: success.user,
+        message: success.message
       });
     },
     (error) => {
+      console.error('Registration route error:', error);
       res.status(error.status || 500).json({ message: error.message });
     }
   );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { config } from '../../config/config';
 
 const VerifyOTP = () => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -34,15 +35,17 @@ const VerifyOTP = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const otpString = otp.join('');
-    
+  const handleVerify = async () => {
     try {
-      const response = await fetch('http://localhost:8081/user/verify-otp', {
+      const response = await fetch(`${config.backendUrl}/user/verify-otp`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, otp: otpString }),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email,
+          otp
+        }),
       });
 
       const data = await response.json();
@@ -78,7 +81,7 @@ const VerifyOTP = () => {
         {error && (
           <p className="text-red-500 text-sm text-center">{error}</p>
         )}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6" onSubmit={handleVerify}>
           <div className="flex gap-2 justify-center">
             {otp.map((digit, index) => (
               <input

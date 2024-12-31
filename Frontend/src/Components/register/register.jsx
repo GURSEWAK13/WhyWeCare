@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import banner from '../../assets/signInBanner.svg'
 import { useNavigate } from 'react-router-dom';
+import { config } from '../../config/config';
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -32,25 +33,28 @@ export default function RegisterPage() {
     };
 
     try {
-      const response = await fetch('http://localhost:8081/user/register', {
+      const response = await fetch(`${config.backendUrl}/user/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Registration failed');
+        throw new Error(data.message || 'Registration failed');
       }
 
-      const data = await response.json();
-      
-      // Store all user data including city
+      // Store user data
       localStorage.setItem('token', data.token);
       localStorage.setItem('name', data.user.name);
       localStorage.setItem('state', data.user.state);
       localStorage.setItem('city', data.user.city);
 
+      // Show success message
+      alert(data.message || 'Registration successful! Please verify your email.');
+
+      // Navigate to OTP verification
       navigate('/verify-otp', { state: { email: user.email } });
 
     } catch (error) {

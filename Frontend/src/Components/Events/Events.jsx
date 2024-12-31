@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { config } from '../../config/config';
 
 const EventsPage = () => {
   const navigate = useNavigate();
@@ -45,8 +46,8 @@ const EventsPage = () => {
   const fetchEvents = async (state) => {
     try {
       const endpoint = state === 'all' ? 
-        'http://localhost:8081/events' : 
-        `http://localhost:8081/events/${state}`;
+        `${config.backendUrl}/events` : 
+        `${config.backendUrl}/events/${state}`;
 
       const response = await fetch(endpoint);
       if (response.ok) {

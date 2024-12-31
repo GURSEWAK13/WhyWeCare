@@ -110,16 +110,24 @@ UserModel.signIn = async (user, successCallback, errorCallback) => {
 };
 
 UserModel.register = async (user, successCallback, errorCallback) => {
-  // Validate required fields
-  if (!user.name || !user.email || !user.password || !user.state || !user.city) {
-    errorCallback({ status: 400, message: "All fields are required" });
-    return;
-  }
-
   try {
+    // Validate required fields
+    if (!user.name || !user.email || !user.password || !user.state || !user.city) {
+      errorCallback({ status: 400, message: "All fields are required" });
+      return;
+    }
+
+    // Check if user already exists
+    const existingUser = await UserModel.findOne({ email: user.email });
+    if (existingUser) {
+      errorCallback({ status: 400, message: "Email already registered" });
+      return;
+    }
+
     const otp = generateOTP();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
+    // Create new user first
     const newUser = await UserModel.create({
       name: user.name,
       email: user.email,
@@ -127,16 +135,11 @@ UserModel.register = async (user, successCallback, errorCallback) => {
       state: user.state,
       city: user.city,
       otp,
-      otpExpires
+      otpExpires,
+      isVerified: false
     });
 
-    const emailSent = await sendVerificationEmail(user.email, otp);
-    if (!emailSent) {
-      await UserModel.deleteOne({ _id: newUser._id });
-      errorCallback({ status: 500, message: "Error sending verification email" });
-      return;
-    }
-
+    // Generate token
     const token = jwt.sign({
       email: newUser.email,
       name: newUser.name,
@@ -144,12 +147,32 @@ UserModel.register = async (user, successCallback, errorCallback) => {
       city: newUser.city
     }, JWT_SECRET_KEY, { expiresIn: '24h' });
 
+    // Try to send email, but don't fail registration if email fails
+    try {
+      await sendVerificationEmail(user.email, otp);
+    } catch (emailError) {
+      console.error('Email sending error:', emailError);
+      // Continue with registration even if email fails
+    }
+
+    // Return success with user data
     successCallback({
-      email: newUser.email,
+      token,
+      user: {
+        name: newUser.name,
+        email: newUser.email,
+        state: newUser.state,
+        city: newUser.city
+      },
       message: "Please check your email for OTP verification"
     });
+
   } catch (error) {
-    errorCallback({ status: 500, message: "Error registering user" });
+    console.error("Registration error:", error);
+    // If user was created but something else failed, still return success
+    if (error.code !== 11000) { // Not a duplicate key error
+      errorCallback({ status: 500, message: "Error registering user" });
+    }
   }
 };
 

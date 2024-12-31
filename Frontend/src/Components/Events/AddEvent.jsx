@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { config } from '../../config/config';
 
 const AddEvent = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const AddEvent = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:8081/events', {
+      const response = await fetch(`${config.backendUrl}/events`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

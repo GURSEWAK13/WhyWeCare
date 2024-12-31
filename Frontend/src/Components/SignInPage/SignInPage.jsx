@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import banner from '../../assets/signInBanner.svg';
+import { config } from '../../config/config';
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -28,7 +29,7 @@ export default function SignInPage() {
     };
   
     try {
-      const response = await fetch('http://localhost:8081/user/signin', {
+      const response = await fetch(`${config.backendUrl}/user/signin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user),

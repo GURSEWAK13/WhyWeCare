@@ -1,13 +1,11 @@
 import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-dotenv.config();
-const mail = process.env.EMAIL_USER;
-const key = process.env.EMAIL_PASSWORD;
+import { config } from '../config/config.js';
+
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: mail,
-    pass: key
+    user: config.emailUser,
+    pass: config.emailPassword
   }
 });
 
@@ -17,7 +15,7 @@ export const generateOTP = () => {
 
 export const sendVerificationEmail = async (email, otp) => {
   const mailOptions = {
-    from: mail,
+    from: config.emailUser,
     to: email,
     subject: 'Email Verification - WeCare',
     html: `
@@ -44,7 +42,7 @@ export const sendVerificationEmail = async (email, otp) => {
 
 export const sendLoginNotification = async (email, loginTime, deviceInfo) => {
   const mailOptions = {
-    from: mail,
+    from: config.emailUser,
     to: email,
     subject: 'New Login Detected - WeCare',
     html: `

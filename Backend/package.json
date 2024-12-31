@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node --env-file=.env index.js",
+    "dev": "NODE_ENV=development node --env-file=.env index.js",
+    "prod": "NODE_ENV=production node --env-file=.env index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

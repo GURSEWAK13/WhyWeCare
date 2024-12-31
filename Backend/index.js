@@ -4,17 +4,20 @@ import userRoute from "./routes/user.js";
 import userEvent from "./routes/events.js"
 import "./config/dbconnection.js";
 import cors from 'cors';
+import { config } from './config/config.js';
 
 const app = express();
-const port = "8081";
 
 // Generic Middlewares
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: config.frontendUrl,
+  credentials: true
+}));
 
 app.use("/", express.static("./../frontend/dist"))
 
-// Routing middleware - no auth middleware here
+// Routing middleware
 app.use("/products", productsRoute);
 app.use("/user", userRoute);
 app.use("/events", userEvent);
@@ -34,6 +37,6 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Not Found' });
 });
 
-app.listen(port, () => {
-  console.log("The server is running on port: ", port);
+app.listen(config.port, () => {
+  console.log(`Server running on port ${config.port} in ${config.nodeEnv} mode`);
 });
