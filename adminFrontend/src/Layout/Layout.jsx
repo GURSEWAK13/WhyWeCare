@@ -1,14 +1,19 @@
+import { Outlet, useLocation } from "react-router-dom";
+import Header from "../components/elements/Header";
+import Footer from "../components/elements/Footer";
 
-import { Outlet } from "react-router-dom";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+export function Layout(props) {
+  const location = useLocation();
 
-export function Layout() {
+  // Check if the current path is '/auth'
+  const isAuthPage = location.pathname === "/auth";
+
   return (
     <>
-    <Header />
-    <Outlet />
-    <Footer />
+      {/* Render Header and Footer only if it's not the /auth route */}
+      {!isAuthPage && <Header />}
+      <Outlet />
+      {!isAuthPage && <Footer />}
     </>
   );
 }
