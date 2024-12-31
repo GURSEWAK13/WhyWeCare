@@ -34,7 +34,9 @@ app.use("/events_state", userEvent_state);
 app.get("/", (req, res) => {
   res.send("hello world again");
 });
-
+app.listen(8081, () => {
+  console.log('Server is running on port http://localhost:8081');
+})
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
