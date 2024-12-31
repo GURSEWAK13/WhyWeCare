@@ -1,16 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const AddEvent = () => {
   const navigate = useNavigate();
+  const [userState, setUserState] = useState('');
   const [eventData, setEventData] = useState({
     title: '',
     date: '',
     type: '',
     imageUrl: '',
     description: '',
-    address: '' // Keeping only the address field
+    address: ''
   });
+
+  useEffect(() => {
+    const state = localStorage.getItem('state');
+    const city = localStorage.getItem('city');
+    
+    if (!state || !city) {
+      alert('Please sign in to add an event');
+      navigate('/signin');
+      return;
+    }
+    
+    setUserState(state);
+  }, [navigate]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const state = localStorage.getItem('state');
+      const city = localStorage.getItem('city');
+
+      if (!state || !city) {
+        alert('Please sign in to add an event');
+        navigate('/signin');
+        return;
+      }
+
+      const response = await fetch('http://localhost:8081/events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...eventData,
+          state: state,
+          city: city,
+          date: new Date(eventData.date).toISOString()
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create event');
+      }
+
+      navigate('/events');
+    } catch (error) {
+      console.error('Error creating event:', error);
+      alert(error.message);
+    }
+  };
 
   const eventTypes = [
     'BLOOD DONATION',
@@ -26,17 +78,6 @@ const AddEvent = () => {
       ...eventData,
       [e.target.name]: e.target.value
     });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      // API call will go here
-      console.log('Event Data:', eventData);
-      navigate('/events'); // Redirect back to events page after submission
-    } catch (error) {
-      console.error('Error creating event:', error);
-    }
   };
 
   return (

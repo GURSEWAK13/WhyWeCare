@@ -49,6 +49,7 @@ export default function SignInPage() {
       localStorage.setItem('token', data.token);
       localStorage.setItem('name', data.user.name);
       localStorage.setItem('state', data.user.state);
+      localStorage.setItem('city', data.user.city);
   
       setTimeout(() => {
         window.location.href = '/events';

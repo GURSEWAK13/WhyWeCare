@@ -1,55 +1,66 @@
-import React, { useState } from 'react';
-const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import logo from "../assets/logo.png";
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+export default function Header() {
+  const navigate = useNavigate();
+  const isAuthenticated = !!localStorage.getItem('token');
+  const userName = localStorage.getItem('name');
+  const userState = localStorage.getItem('state');
+  const userCity = localStorage.getItem('city');
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/');
+  };
 
   return (
-    <header className="bg-gray-900 text-white py-3 px-6 md:px-4 flex justify-between items-center ">
-      <div className="text-xl font-bold">WeCare</div>
-      <nav
-        className={`
-          flex flex-col md:flex-row items-end md:items-center space-y-4 md:space-y-0 md:space-x-6
-          ${isMenuOpen ? 'block' : 'hidden'}
-          md:block
-        `}
-      >
-        <a href="/" className="hover:text-gray-400">WeCare</a>
-        <a href="/services" className="hover:text-gray-400">Services</a>
-        <a href="/events" className="hover:text-gray-400">Events</a>
-        <a href="#" className="hover:text-gray-400">Volunteer</a>
-        <a href="#" className="hover:text-gray-400">Contact</a>
+    <header className="bg-gray-900 text-white">
+      <nav className="container mx-auto px-6 py-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <Link to="/">
+              <img src={logo} alt="Logo" className="h-10 w-10" />
+            </Link>
+          </div>
+          <div className="flex items-center space-x-4">
+            <Link to="/" className="hover:text-blue-500">Home</Link>
+            <Link to="/events" className="hover:text-blue-500">Events</Link>
+            <Link to="/services" className="hover:text-blue-500">Services</Link>
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-4">
+                <div className="text-sm">
+                  <span className="font-medium">{userName}</span>
+                  <span className="text-gray-400 ml-2">
+                    {userCity && userState ? `${userCity}, ${userState}` : userState}
+                  </span>
+                </div>
+                <button 
+                  onClick={handleLogout}
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link 
+                  to="/signin" 
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm"
+                >
+                  Sign In
+                </Link>
+                <Link 
+                  to="/register" 
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md text-sm"
+                >
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
       </nav>
-      <div className="flex space-x-4">
-        <a href="#" className="bg-white text-gray-900 px-4 py-2 rounded-md hover:bg-gray-200">
-          Donate Now
-        </a>
-        <a href="/signin" className="bg-white text-gray-900 px-4 py-2 rounded-md hover:bg-gray-200">
-          Sign In
-        </a>
-        <a href="/register" className="bg-white text-gray-900 px-4 py-2 rounded-md hover:bg-gray-200">
-          Register
-        </a>
-        <button
-          className="md:hidden"
-          onClick={toggleMenu}
-        >
-          {isMenuOpen ? (
-            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          ) : (
-            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 6H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M4 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M4 18H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          )}
-        </button>
-      </div>
     </header>
   );
-};
-
-export default Header;
+}

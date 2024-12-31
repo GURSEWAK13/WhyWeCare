@@ -1,35 +1,37 @@
-// const app = require("express")
 import express from "express";
 import productsRoute from "./routes/products.js";
 import userRoute from "./routes/user.js";
 import userEvent from "./routes/events.js"
 import "./config/dbconnection.js";
+import cors from 'cors';
 
 const app = express();
 const port = "8081";
 
 // Generic Middlewares
 app.use(express.json());
-app.use("*", (req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, PUT, POST, DELETE, OPTIONS"
-  );
-  next();
-});
+app.use(cors());
 
 app.use("/", express.static("./../frontend/dist"))
 
-// Routing middleware
+// Routing middleware - no auth middleware here
 app.use("/products", productsRoute);
 app.use("/user", userRoute);
 app.use("/events", userEvent);
 
 app.get("/", (req, res) => {
-  // Do some logic here
   res.send("hello world again");
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something broke!' });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not Found' });
 });
 
 app.listen(port, () => {

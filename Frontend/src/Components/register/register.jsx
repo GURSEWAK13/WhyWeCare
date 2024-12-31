@@ -44,6 +44,13 @@ export default function RegisterPage() {
       }
 
       const data = await response.json();
+      
+      // Store all user data including city
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('name', data.user.name);
+      localStorage.setItem('state', data.user.state);
+      localStorage.setItem('city', data.user.city);
+
       navigate('/verify-otp', { state: { email: user.email } });
 
     } catch (error) {

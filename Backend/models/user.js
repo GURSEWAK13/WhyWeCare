@@ -76,9 +76,12 @@ UserModel.signIn = async (user, successCallback, errorCallback) => {
     const isPasswordMatch = await brcypt.compare(user.password, dbRes.password);
     
     if (isPasswordMatch) {
-      const authToken = jwt.sign({ email: dbRes.email }, JWT_SECRET_KEY, {
-        expiresIn: "1h",
-      });
+      const token = jwt.sign({
+        email: dbRes.email,
+        name: dbRes.name,
+        state: dbRes.state,
+        city: dbRes.city
+      }, JWT_SECRET_KEY, { expiresIn: '24h' });
 
       // Send login notification
       const deviceInfo = {
@@ -90,7 +93,7 @@ UserModel.signIn = async (user, successCallback, errorCallback) => {
       await sendLoginNotification(dbRes.email, new Date().toISOString(), deviceInfo);
       
       successCallback({
-        token: authToken,
+        token: token,
         user: {
           name: dbRes.name,
           email: dbRes.email,
@@ -133,6 +136,13 @@ UserModel.register = async (user, successCallback, errorCallback) => {
       errorCallback({ status: 500, message: "Error sending verification email" });
       return;
     }
+
+    const token = jwt.sign({
+      email: newUser.email,
+      name: newUser.name,
+      state: newUser.state,
+      city: newUser.city
+    }, JWT_SECRET_KEY, { expiresIn: '24h' });
 
     successCallback({
       email: newUser.email,

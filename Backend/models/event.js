@@ -1,7 +1,5 @@
-import statesAndCities from "./states.js";
 import mongoose from "mongoose";
 
-// Create schema for events
 const eventSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -35,81 +33,60 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  state: {
+    type: String,
+    required: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  }
+}, {
+  timestamps: true
 });
 
-// Create state-specific models
-const stateModels = {};
-statesAndCities.forEach(state => {
-  // Replace spaces with underscores for model names
-  const modelName = `Event_${state.replace(/\s+/g, '_')}`;
-  stateModels[state] = mongoose.model(modelName, eventSchema);
-});
+const EventModel = mongoose.model('Event', eventSchema);
 
-// Create event model object
-const eventModel = {};
-
-eventModel.findAllEvents = async (state, successCallback, errorCallback) => {
-  try {
-    const model = stateModels[state];
-    if (!model) {
-      throw new Error(`Invalid state: ${state}`);
+const eventService = {
+  findAllEvents: async (state = null) => {
+    try {
+      if (!state || state === 'all') {
+        return await EventModel.find();
+      }
+      return await EventModel.find({ state });
+    } catch (error) {
+      throw error;
     }
-    const dbRes = await model.find();
-    console.log("GET | dbRes is: ", dbRes);
-    successCallback(dbRes);
-  } catch (dbErr) {
-    console.error("GET | dbErr is: ", dbErr);
-    errorCallback(dbErr);
+  },
+
+  addEvent: async (event) => {
+    try {
+      const newEvent = new EventModel(event);
+      return await newEvent.save();
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  editEvent: async (eventId, eventData) => {
+    try {
+      return await EventModel.findByIdAndUpdate(
+        eventId,
+        eventData,
+        { new: true }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  deleteEvent: async (eventId) => {
+    try {
+      return await EventModel.findByIdAndDelete(eventId);
+    } catch (error) {
+      throw error;
+    }
   }
 };
 
-eventModel.addEvent = async (state, event, successCallback, errorCallback) => {
-  try {
-    const model = stateModels[state];
-    if (!model) {
-      throw new Error(`Invalid state: ${state}`);
-    }
-    const dbRes = await model.create(event);
-    console.log("POST | dbRes is: ", dbRes);
-    successCallback(dbRes);
-  } catch (dbErr) {
-    console.error("POST | dbErr is: ", dbErr);
-    errorCallback(dbErr);
-  }
-};
-
-eventModel.editEvent = async (state, event, successCallback, errorCallback) => {
-  try {
-    const model = stateModels[state];
-    if (!model) {
-      throw new Error(`Invalid state: ${state}`);
-    }
-    const dbRes = await model.findByIdAndUpdate(
-      event._id,
-      event,
-      { new: true } // Return updated document
-    );
-    console.log("EDIT | dbRes is: ", dbRes);
-    successCallback(dbRes);
-  } catch (dbErr) {
-    console.error("EDIT | dbErr is: ", dbErr);
-    errorCallback(dbErr);
-  }
-};
-
-eventModel.deleteEvent = async (state, id, successCallback, errorCallback) => {
-  try {
-    const model = stateModels[state];
-    if (!model) {
-      throw new Error(`Invalid state: ${state}`);
-    }
-    const dbRes = await model.findByIdAndDelete(id);
-    console.log("DELETE | dbRes is: ", dbRes);
-    successCallback(dbRes);
-  } catch (dbErr) {
-    console.error("DELETE | dbErr is: ", dbErr);
-    errorCallback(dbErr);
-  }
-};
-
-export default eventModel;
+export default eventService;

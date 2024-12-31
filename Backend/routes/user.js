@@ -32,25 +32,23 @@ router.get("/:email", verifyToken, (req, res) => {
 });
 // For Sign in--------------------------
 router.post("/signin", (req, res) => {
-  const userCreds = req.body;
+  const user = req.body;
+  
   UserModel.signIn(
-    userCreds,
-    (dbRes) => {
-      if (dbRes) {
-        res.send(dbRes);
-      } else {
-        res.status(400);
-        res.send(dbRes);
-      }
+    user,
+    (success) => {
+      res.status(200).json({
+        token: success.token,
+        user: {
+          name: success.user.name,
+          email: success.user.email,
+          state: success.user.state,
+          city: success.user.city
+        }
+      });
     },
-    (dbErr) => {
-      console.log(dbErr.name);
-      if (dbErr.name === "ValidationError") {
-        res.status(dbErr.status || 400);
-      } else {
-        res.status(dbErr.status || 500);
-      }
-      res.send({ error: dbErr.message });
+    (error) => {
+      res.status(error.status || 500).json({ message: error.message });
     }
   );
 });
@@ -86,7 +84,15 @@ router.post('/register', (req, res) => {
   UserModel.register(
     user,
     (success) => {
-      res.status(201).json(success);
+      res.status(201).json({
+        token: success.token,
+        user: {
+          name: success.user.name,
+          email: success.user.email,
+          state: success.user.state,
+          city: success.user.city
+        }
+      });
     },
     (error) => {
       res.status(error.status || 500).json({ message: error.message });
